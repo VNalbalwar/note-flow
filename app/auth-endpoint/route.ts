@@ -7,13 +7,22 @@ export async function POST(req: NextRequest) {
   await auth.protect(); // Ensure the user is authenticated
 
   const { sessionClaims } = await auth();
+
+  if (!sessionClaims?.email || !sessionClaims?.fullName || !sessionClaims?.image) {
+
+    return NextResponse.json(
+      { message: "Missing required session claims" },
+      { status: 400 }
+    );
+  }
+
   const { room } = await req.json();
 
-  const session = liveblocks.prepareSession(sessionClaims?.email!, {
+  const session = liveblocks.prepareSession(sessionClaims.email, {
     userInfo: {
-      name: sessionClaims?.fullName!,
-      email: sessionClaims?.email!,
-      avatar: sessionClaims?.image!,
+      name: sessionClaims.fullName,
+      email: sessionClaims.email,
+      avatar: sessionClaims.image,
     },
   });
 
