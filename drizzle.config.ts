@@ -7,5 +7,6 @@ export default defineConfig({
   dialect: "postgresql",
   schema: "./src/lib/db/schema.ts",
   out: "./drizzle",
-  dbCredentials: { url: process.env.DATABASE_URL! },
+  // Table changes use a direct connection when the host provides one (Neon does).
+  dbCredentials: { url: process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL! },
 });

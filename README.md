@@ -92,11 +92,11 @@ Do these in order. Pick your Vercel project name first; the examples use `huddle
 
 ### 1. Database: Neon
 
-Create a free project at neon.com and copy the **pooled** connection string. Create the tables from your laptop:
+In your Vercel project open **Storage**, create a **Neon** database on the Free plan and connect it to **Production** with
+the prefix `DATABASE`, which creates `DATABASE_URL`. Huddle doesn't use Neon Auth or Realtime.
 
-```bash
-DATABASE_URL='paste-the-neon-string' npm run db:migrate
-```
+You don't create tables by hand: every production build runs the migrations first (`scripts/vercel-build.mjs`), so the
+connection string never leaves Vercel. If you host elsewhere, run `DATABASE_URL='…' npm run db:migrate` yourself.
 
 ### 2. Sync server: Cloudflare
 
@@ -125,7 +125,7 @@ Import the GitHub repository at vercel.com and add these environment variables *
 
 | Name | Value |
 | --- | --- |
-| `DATABASE_URL` | Neon pooled string |
+| `DATABASE_URL` | added for you by the Neon connection |
 | `APP_URL` | `https://huddle-yourname.vercel.app` |
 | `BETTER_AUTH_SECRET` | new random value |
 | `SYNC_SECRET` | the same value as step 2 |

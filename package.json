@@ -17,7 +17,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:up": "docker compose up -d --wait",
     "test:sync": "node --test --test-force-exit tests/sync.test.mjs",
-    "setup": "node scripts/setup-local.mjs"
+    "setup": "node scripts/setup-local.mjs",
+    "vercel-build": "node scripts/vercel-build.mjs"
   },
   "dependencies": {
     "@better-auth/passkey": "^1.7.28",
