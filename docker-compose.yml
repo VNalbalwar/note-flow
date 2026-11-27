@@ -1,0 +1,19 @@
+# Local development database only. Production uses a free Neon Postgres.
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: huddle
+      POSTGRES_PASSWORD: huddle_local_only
+      POSTGRES_DB: huddle
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - huddle-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U huddle"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+volumes:
+  huddle-db:

@@ -1,0 +1,32 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "NODE_OPTIONS='--require ./scripts/ipv4.cjs' npm run dev"
+      ],
+      "port": 3000
+    },
+    {
+      "name": "sync",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev:sync"
+      ],
+      "port": 8787
+    },
+    {
+      "name": "web-prod",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "NODE_OPTIONS='--require ./scripts/ipv4.cjs' npm run start"
+      ],
+      "port": 3000
+    }
+  ]
+}

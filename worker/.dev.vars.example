@@ -1,0 +1,3 @@
+# Copy to worker/.dev.vars. SYNC_SECRET must match .env.local.
+SYNC_SECRET=
+APP_ORIGIN=http://localhost:3000
