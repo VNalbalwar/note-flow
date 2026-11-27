@@ -14,7 +14,7 @@
   "env": {
     "production": {
       "name": "huddle-sync",
-      "vars": { "APP_ORIGIN": "https://CHANGE-ME.vercel.app", "AI_MODEL": "@cf/zai-org/glm-4.7-flash" },
+      "vars": { "APP_ORIGIN": "https://viraj-huddle.vercel.app", "AI_MODEL": "@cf/zai-org/glm-4.7-flash" },
       "ai": { "binding": "AI" },
       "durable_objects": { "bindings": [{ "name": "Doc", "class_name": "DocRoom" }] },
       "migrations": [{ "tag": "v1", "new_sqlite_classes": ["DocRoom"] }]
