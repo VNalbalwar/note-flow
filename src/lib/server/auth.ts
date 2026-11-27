@@ -141,6 +141,15 @@ function createAuth() {
     },
 
     databaseHooks: {
+      session: {
+        delete: {
+          // Sign out: this browser's other tabs are still connected to live pages.
+          // Runs once the session is gone, so they can't fetch a new pass.
+          after: async (session, context) => {
+            if (context?.path === "/sign-out") await dropLiveSessions(session.userId);
+          },
+        },
+      },
       user: {
         create: {
           before: async (user) => ({ data: { ...user, name: cleanName(user.name) } }),

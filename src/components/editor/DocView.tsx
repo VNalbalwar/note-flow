@@ -27,6 +27,7 @@ import { Avatar } from "@/components/app/Avatar";
 import { DOC_ICONS, DocIcon } from "@/components/app/DocIcon";
 import { Menu, type MenuItem } from "@/components/ui/Menu";
 import { toast } from "@/components/ui/Toasts";
+import { isSigningOut } from "@/lib/sign-out";
 import type { SyncRole } from "@/shared/sync";
 import { AiDialog } from "./AiDialog";
 import { exportHtml, exportMarkdown } from "./exporting";
@@ -153,7 +154,10 @@ export function DocView(props: DocViewProps) {
   // Edits made while disconnected live only in this tab until the connection returns.
   useEffect(() => {
     if (status !== "offline" || !editable) return;
-    const warn = (e: BeforeUnloadEvent) => e.preventDefault();
+    const warn = (e: BeforeUnloadEvent) => {
+      // Signing out disconnects the page on purpose; don't hold the tab open for it.
+      if (!isSigningOut()) e.preventDefault();
+    };
     window.addEventListener("beforeunload", warn);
     return () => window.removeEventListener("beforeunload", warn);
   }, [status, editable]);

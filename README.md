@@ -165,7 +165,7 @@ None of these needs a paid plan for a class project. Do not add a payment card a
 - **Live connections** need a 60-second signed pass for exactly one page. The Worker also checks the website origin.
 - **Viewers can't write:** the sync server discards their changes, whatever their browser sends.
 - **No impersonation:** the server rewrites each presence message with the verified name and colour.
-- **Revocation:** removing someone, changing their role or deleting an account disconnects the open windows and rejects older passes. Every connection is re-checked at least every 15 minutes.
+- **Revocation:** removing someone, changing their role, signing out or deleting an account disconnects the open windows and rejects older passes. Every connection is re-checked at least every 15 minutes.
 - **Invites** are claimed only by someone who has verified that email address, and the response never reveals whether an account exists.
 - **Share links** are stored as hashes. The secret sits after `#`, which browsers don't send to servers.
 - **Uploads** are identified by their bytes (no SVG), size-limited, and served only to people with access.

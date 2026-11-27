@@ -9,6 +9,7 @@ import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { Menu } from "@/components/ui/Menu";
 import { Toaster } from "@/components/ui/Toasts";
 import { authClient } from "@/lib/auth-client";
+import { announceSignOut, onSignedOut, setSigningOut } from "@/lib/sign-out";
 import type { DocSummary } from "@/lib/server/docs";
 import { Avatar } from "./Avatar";
 import { CommandPalette } from "./CommandPalette";
@@ -69,6 +70,16 @@ export function AppShell({ me, docs, children }: { me: Me; docs: DocSummary[]; c
     return () => window.removeEventListener("keydown", key);
   }, []);
 
+  useEffect(
+    () =>
+      // A full load, so this tab drops the names and pages it was still showing.
+      onSignedOut(() => {
+        // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- a full load drops cached pages
+        window.location.href = "/";
+      }),
+    [],
+  );
+
   const [lastPath, setLastPath] = useState(path);
   if (lastPath !== path) {
     setLastPath(path);
@@ -128,7 +139,11 @@ export function AppShell({ me, docs, children }: { me: Me; docs: DocSummary[]; c
               label: "Sign out",
               icon: <LogOut className="size-4" />,
               onSelect: async () => {
-                await authClient.signOut();
+                // Set first: live pages disconnect before the reply arrives.
+                setSigningOut(true);
+                const { error } = await authClient.signOut();
+                if (error) setSigningOut(false);
+                else announceSignOut();
                 // A full load clears every cached page from memory.
                 // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- a full load drops cached pages
                 window.location.href = "/";
