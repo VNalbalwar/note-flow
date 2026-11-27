@@ -1,4 +1,5 @@
 // Security tests for the sync server. Start it first (npm run dev:sync), then: npm run test:sync
+// To test a deployed server, set SYNC_HOST, SYNC_ORIGIN and SYNC_SECRET.
 import { after, test } from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
@@ -14,9 +15,16 @@ const vars = Object.fromEntries(
     .map((l) => [l.slice(0, l.indexOf("=")), l.slice(l.indexOf("=") + 1).trim()]),
 );
 const HOST = process.env.SYNC_HOST ?? "127.0.0.1:8787";
-const ORIGIN = vars.APP_ORIGIN ?? "http://localhost:3000";
-const key = new TextEncoder().encode(vars.SYNC_SECRET);
-const room = () => randomBytes(16).toString("base64url");
+const LOCAL = /^(localhost|127\.0\.0\.1)(:|$)/.test(HOST);
+const HTTP = `${LOCAL ? "http" : "https"}://${HOST}`;
+const ORIGIN = process.env.SYNC_ORIGIN ?? vars.APP_ORIGIN ?? "http://localhost:3000";
+const key = new TextEncoder().encode(process.env.SYNC_SECRET ?? vars.SYNC_SECRET);
+const rooms = [];
+const room = () => {
+  const id = randomBytes(16).toString("base64url");
+  rooms.push(id);
+  return id;
+};
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const opened = [];
 
@@ -40,7 +48,7 @@ function join(doc, token, { origin = ORIGIN } = {}) {
   const ydoc = new Y.Doc();
   const provider = new YProvider(HOST, doc, ydoc, {
     party: "doc",
-    protocol: "ws",
+    protocol: LOCAL ? "ws" : "wss",
     disableBc: true,
     params: { token },
     WebSocketPolyfill: socketFrom(origin),
@@ -72,15 +80,17 @@ async function admin(doc, action, { body, sign = {}, auth = true, query = "" } =
     .setIssuedAt()
     .setExpirationTime("30s")
     .sign(key);
-  return fetch(`http://${HOST}/admin/${doc}/${action}${query}`, {
+  return fetch(`${HTTP}/admin/${doc}/${action}${query}`, {
     method: "POST",
     headers: auth ? { authorization: `Bearer ${token}` } : {},
     body,
   });
 }
 
-after(() => {
+after(async () => {
   for (const p of opened) p.destroy();
+  // Leave nothing behind, which matters when testing a live server.
+  await Promise.allSettled(rooms.map((id) => admin(id, "purge")));
 });
 
 test("two editors see each other's typing", async () => {
@@ -184,8 +194,8 @@ test("admin commands need a signature for that exact page and action", async () 
   assert.equal((await admin(doc, "versions", { auth: false })).status, 401);
   assert.equal((await admin(doc, "versions", { sign: { room: room() } })).status, 403);
   assert.equal((await admin(doc, "purge", { sign: { action: "versions" } })).status, 403);
-  assert.equal((await fetch(`http://${HOST}/parties/doc/${doc}`, { method: "POST" })).status, 404);
-  assert.equal((await fetch(`http://${HOST}/parties/doc/${doc}/internal/purge`, { method: "POST" })).status, 404);
+  assert.equal((await fetch(`${HTTP}/parties/doc/${doc}`, { method: "POST" })).status, 404);
+  assert.equal((await fetch(`${HTTP}/parties/doc/${doc}/internal/purge`, { method: "POST" })).status, 404);
 });
 
 test("versions are saved, content persists, and deletion is final", async () => {
