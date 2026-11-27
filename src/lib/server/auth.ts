@@ -11,9 +11,12 @@ import * as schema from "@/lib/db/schema";
 import { env } from "./env";
 import { sendMail } from "./mail";
 import { purgeRoom } from "./sync";
-import { dropLiveSessions } from "./live";
+import { disconnectFrom, dropLiveSessions, pagesOf } from "./live";
 
 const DAY = 60 * 60 * 24;
+
+/** Shared pages of accounts that are being deleted, carried from one step to the next. */
+const leaving = new Map<string, string[]>();
 
 /** Display names are shown to collaborators: single line, bounded, no control characters. */
 export function cleanName(value: unknown) {
@@ -99,6 +102,16 @@ function createAuth() {
         beforeDelete: async (user) => {
           const owned = await db.select({ id: schema.doc.id }).from(schema.doc).where(eq(schema.doc.ownerId, user.id));
           await Promise.all(owned.map((d) => purgeRoom(d.id)));
+          // Remember their pages now: the memberships are gone once the account is.
+          const erased = new Set(owned.map((d) => d.id));
+          leaving.set(user.id, (await pagesOf(user.id)).filter((id) => !erased.has(id)));
+        },
+        // Disconnect only after the account and its sessions are gone. Any earlier,
+        // an open window could fetch a fresh pass and connect straight back.
+        afterDelete: async (user) => {
+          const shared = leaving.get(user.id) ?? [];
+          leaving.delete(user.id);
+          await disconnectFrom(shared, user.id);
         },
       },
     },
