@@ -9,7 +9,7 @@ export function SheetStage() {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "start 0.2"] });
-  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 24 });
+  const progress = useSpring(scrollYProgress, { stiffness: 420, damping: 48, mass: 0.4 });
   const rotateX = useTransform(progress, [0, 1], [34, 0]);
   const scale = useTransform(progress, [0, 1], [0.86, 1]);
   const y = useTransform(progress, [0, 1], [60, 0]);

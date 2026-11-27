@@ -8,7 +8,6 @@
   color-scheme: light dark;
   --rond: 50;
   --glow: 0.46;
-  --grain: 0.2;
 }
 :root[data-theme="light"] {
   color-scheme: light;
@@ -19,12 +18,10 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --glow: 0.26;
-    --grain: 0.12;
   }
 }
 :root[data-theme="dark"] {
   --glow: 0.26;
-  --grain: 0.12;
 }
 
 /* "Orchard": pale pistachio and forest green by day, moss and apricot by night. */
@@ -64,6 +61,18 @@
   --hero: linear-gradient(155deg,#2c8553 0%,#185c37 45%,#0a3220 100%);
 }
 
+/* High-resolution screens used without OS scaling would otherwise show tiny text. */
+@media (min-width: 1900px) and (min-height: 1000px) {
+  html {
+    font-size: 112.5%;
+  }
+}
+@media (min-width: 2400px) and (min-height: 1200px) {
+  html {
+    font-size: 125%;
+  }
+}
+
 :root {
   --shadow: 0 1px 2px var(--shade-1), 0 22px 48px -22px var(--shade-2);
   --shadow-lift: 0 2px 4px var(--shade-1), 0 40px 80px -30px var(--shade-3);
@@ -99,17 +108,6 @@
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
-  }
-  /* Paper grain over everything, so flat colour never looks like plastic. */
-  body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: 60;
-    pointer-events: none;
-    opacity: var(--grain);
-    mix-blend-mode: soft-light;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
   h1,
   h2,
@@ -298,7 +296,30 @@
   .dots {
     background-image: radial-gradient(var(--dots) 1.2px, transparent 1.3px);
     background-size: 26px 26px;
-    mask-image: radial-gradient(ellipse 75% 70% at 50% 45%, #000 30%, transparent 100%);
+  }
+
+  /*
+   * The hero headline. One size from the screen's width or height, whichever is
+   * tighter, so letters are never stretched to fill a wide screen.
+   */
+  .hero-type {
+    font-family: var(--font-flex), sans-serif;
+    font-variation-settings:
+      "wght" 730,
+      "wdth" 94,
+      "ROND" var(--rond),
+      "opsz" 144;
+    /* Short laptop screens keep the buttons in view. */
+    font-size: min(calc((100vw - 4rem) / 4.5), calc(34svh - 4rem));
+    line-height: 0.98;
+    letter-spacing: 0;
+  }
+  .hero-letter {
+    display: inline-block;
+    white-space: pre;
+    transform-origin: 50% 74%;
+    will-change: transform;
+    transition: color 0.12s linear;
   }
 }
 
@@ -310,16 +331,6 @@
   50%,
   100% {
     opacity: 0;
-  }
-}
-
-@keyframes drift {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(5vw, -4vh, 0) scale(1.14);
   }
 }
 
@@ -418,7 +429,6 @@
 }
 .huddle-dialog::backdrop {
   background: rgb(8 20 10 / 0.5);
-  backdrop-filter: blur(3px);
 }
 
 /* ------------------------------------------------------------------- Editor */
@@ -497,7 +507,6 @@
     --line: #ccc;
     color-scheme: light;
   }
-  body::after,
   .bn-side-menu {
     display: none !important;
   }

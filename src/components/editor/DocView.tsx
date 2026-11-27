@@ -227,7 +227,7 @@ export function DocView(props: DocViewProps) {
 
   return (
     <div className="flex min-w-0 flex-1 flex-col">
-      <div className="sticky top-0 z-30 flex items-center gap-2 border-b border-line bg-[color-mix(in_srgb,var(--ground)_86%,transparent)] py-2 pl-14 pr-3 backdrop-blur-md print:hidden md:px-5">
+      <div className="sticky top-0 z-30 flex items-center gap-2 border-b border-line bg-ground py-2 pl-14 pr-3 print:hidden md:px-5">
         <StatusPill status={status} />
         <span className="flex-1" />
         <Presence peers={peers} me={me} onFollow={follow} />

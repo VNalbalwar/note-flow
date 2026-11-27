@@ -1,25 +1,19 @@
-const BLOBS = [
-  { ink: "var(--aura1)", className: "left-[-12vw] top-[-14vh] size-[62vw]", delay: "0s" },
-  { ink: "var(--aura2)", className: "right-[-16vw] top-[4vh] size-[52vw]", delay: "-7s" },
-  { ink: "var(--aura3)", className: "bottom-[-24vh] left-[22vw] size-[56vw]", delay: "-13s" },
-];
+const GLOWS = [
+  "radial-gradient(42% 62% at 8% 12%, var(--aura1), transparent 70%)",
+  "radial-gradient(36% 56% at 96% 24%, var(--aura2), transparent 70%)",
+  "radial-gradient(40% 56% at 52% 96%, var(--aura3), transparent 70%)",
+].join(", ");
 
-/** Slow ambient light in the scheme's colours, with the shared-canvas dot grid. */
+/**
+ * Soft light in the scheme's colours over the shared-canvas dot grid. It is
+ * still on purpose: large moving gradients are costly to draw on big screens.
+ * The movement on the page comes from the people.
+ */
 export function Aurora({ dots = true }: { dots?: boolean }) {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-      {BLOBS.map((b) => (
-        <span
-          key={b.ink}
-          className={`absolute block rounded-full ${b.className}`}
-          style={{
-            background: `radial-gradient(closest-side, ${b.ink}, transparent)`,
-            opacity: "calc(var(--glow) * 0.8)",
-            animation: `drift 22s ease-in-out ${b.delay} infinite`,
-          }}
-        />
-      ))}
-      {dots && <span className="dots absolute inset-0" />}
+      <span className="absolute inset-0 block" style={{ background: GLOWS, opacity: "calc(var(--glow) * 0.85)" }} />
+      {dots && <span className="dots absolute inset-0 opacity-70" />}
     </div>
   );
 }

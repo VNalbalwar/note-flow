@@ -24,13 +24,14 @@ function Letter({ char, index, progress }: { char: string; index: number; progre
   const x = useTransform(progress, [0, 0.72], [`${from.x}vw`, "0vw"]);
   const y = useTransform(progress, [0, 0.72], [`${from.y}vh`, "0vh"]);
   const rotate = useTransform(progress, [0, 0.72], [from.r, 0]);
-  const mix = useTransform(progress, [0.74, 0.92], [100, 0]);
-  const color = useTransform(mix, (v) => `color-mix(in srgb, ${person.ink} ${v}%, var(--ink))`);
+  const ownColour = useTransform(progress, [0.74, 0.92], [1, 0]);
   const tag = useTransform(progress, [0.62, 0.8], [1, 0]);
 
   return (
-    <motion.span style={{ x, y, rotate }} className="relative inline-block">
-      <motion.span style={{ color }} className="inline-block">
+    <motion.span style={{ x, y, rotate }} className="relative inline-block will-change-transform">
+      {/* Two stacked copies cross-fade, which is far cheaper than recolouring giant letters every frame. */}
+      <span className="inline-block">{char}</span>
+      <motion.span style={{ opacity: ownColour, color: person.ink }} className="absolute left-0 top-0 inline-block will-change-[opacity]">
         {char}
       </motion.span>
       <motion.span style={{ opacity: tag }} className="absolute left-1/2 top-[62%] font-sans text-base normal-case tracking-normal [font-variation-settings:normal]">
@@ -45,7 +46,7 @@ export function Finale() {
   const ref = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
-  const smooth = useSpring(scrollYProgress, { stiffness: 90, damping: 22 });
+  const smooth = useSpring(scrollYProgress, { stiffness: 380, damping: 46, mass: 0.4 });
   const settled = useSpring(1, { duration: 0 });
   const progress = reduced ? settled : smooth;
   // The words and button wait until the letters have cleared the space.

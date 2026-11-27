@@ -31,7 +31,7 @@ export default function LandingPage() {
           </nav>
         </header>
 
-        <section className="relative flex flex-1 flex-col justify-center px-5 pb-16 pt-2 md:px-10 lg:pt-20">
+        <section className="relative flex flex-1 flex-col justify-center px-5 pb-10 pt-2 md:px-10 lg:pt-16">
           <HeroArtifacts />
           <HuddleType>
             <Link href="/sign-up" className="btn btn-solid">

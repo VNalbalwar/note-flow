@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect } from "react";
-import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform, type MotionValue } from "motion/react";
+import { motion, useMotionValue, useReducedMotion, useSpring, useTransform, type MotionValue } from "motion/react";
 import { Check, History, Heart, ThumbsUp } from "lucide-react";
 import { PEOPLE_INKS, onInk } from "@/lib/people";
 
 /**
  * Pieces of a shared page floating around the headline. Each sits at its own
- * depth, so they separate as the pointer moves and as the page scrolls.
+ * depth, so they separate as the pointer moves.
  */
 function Shard({
   mx,
@@ -26,13 +26,11 @@ function Shard({
   tilt: number;
   children: React.ReactNode;
 }) {
-  const { scrollY } = useScroll();
-  const x = useTransform(mx, (v) => v * depth * 34);
-  const pointerY = useTransform(my, (v) => v * depth * 26);
-  const y = useTransform([pointerY, scrollY], ([p, s]: number[]) => p - s * depth * 0.32);
+  const x = useTransform(mx, (v) => v * depth * 30);
+  const y = useTransform(my, (v) => v * depth * 22);
 
   return (
-    <motion.div className={`absolute ${className}`} style={{ x, y }}>
+    <motion.div className={`absolute will-change-transform ${className}`} style={{ x, y }}>
       <motion.div
         initial={{ opacity: 0, scale: 0.5, rotate: tilt * 3 }}
         animate={{ opacity: 1, scale: 1, rotate: tilt }}
@@ -72,9 +70,9 @@ export function HeroArtifacts() {
   const shared = { mx, my };
 
   return (
-    <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[2] hidden lg:block">
-      <Shard {...shared} index={0} depth={1.2} tilt={-3} className="left-[7%] top-[1.5%]">
-        <div className="raised sheet flex w-64 gap-3 p-3.5 text-sm leading-snug">
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[2] hidden min-[1280px]:block">
+      <Shard {...shared} index={0} depth={1.2} tilt={-3} className="left-[2.5%] top-[14%]">
+        <div className="raised sheet flex w-48 gap-3 p-3 text-sm leading-snug">
           <Face letter="A" ink={PEOPLE_INKS[3].ink} />
           <p>
             <span className="font-semibold">Amara</span>
@@ -84,14 +82,14 @@ export function HeroArtifacts() {
         </div>
       </Shard>
 
-      <Shard {...shared} index={1} depth={0.7} tilt={2} className="left-[50%] top-[4%]">
+      <Shard {...shared} index={1} depth={0.7} tilt={2} className="bottom-[17%] right-[2%]">
         <div className="raised tag flex items-center gap-2.5 py-2 pl-3 pr-4 text-sm font-semibold">
           <History className="size-4 text-brand" />
           Version saved just now
         </div>
       </Shard>
 
-      <Shard {...shared} index={2} depth={1.6} tilt={4} className="right-[6%] top-[2%]">
+      <Shard {...shared} index={2} depth={1.6} tilt={4} className="right-[3.5%] top-[13%]">
         <div className="raised sheet space-y-2.5 p-4 text-sm font-medium">
           {["Book the hall", "Print posters"].map((t, i) => (
             <p key={t} className="flex items-center gap-2.5">
@@ -107,13 +105,13 @@ export function HeroArtifacts() {
         </div>
       </Shard>
 
-      <Shard {...shared} index={3} depth={1} tilt={-2} className="left-[25%] top-[1%]">
+      <Shard {...shared} index={3} depth={1} tilt={-2} className="bottom-[18%] left-[4%]">
         <pre className="sheet border border-white/10 bg-[var(--code-bg)] px-4 py-3 font-mono text-[13px] leading-6 text-[var(--code-ink)] shadow-[var(--shadow)]">
           <span style={{ color: PEOPLE_INKS[4].ink }}>return</span> median(<span style={{ color: PEOPLE_INKS[6].ink }}>runs</span>)
         </pre>
       </Shard>
 
-      <Shard {...shared} index={4} depth={1.4} tilt={3} className="left-[68%] top-[2%]">
+      <Shard {...shared} index={4} depth={1.4} tilt={3} className="bottom-[6%] right-[13%]">
         <div className="raised tag flex items-center gap-3 py-2 pl-3.5 pr-4 text-sm font-bold">
           <span className="flex items-center gap-1.5">
             <ThumbsUp className="size-4" style={{ color: PEOPLE_INKS[5].ink }} fill="currentColor" /> 3

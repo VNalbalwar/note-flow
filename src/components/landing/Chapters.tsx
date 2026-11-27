@@ -102,7 +102,6 @@ export function Chapters() {
         ))}
         <span className="sticky top-0 block h-screen">
           <span className="absolute -right-[10vw] top-[-20vh] block size-[60vw] rounded-full bg-[radial-gradient(closest-side,rgb(255_255_255/0.28),transparent)]" />
-          <span className="dots absolute inset-0 opacity-60" />
         </span>
       </div>
       <div className="grid gap-x-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">

@@ -39,8 +39,8 @@ corner is sharp on hover.
 
 | Where | What it does |
 | --- | --- |
-| Hero | Two justified lines keep their width; letters under a person swell and take their colour while the rest make room. Each person casts light. |
-| Hero edges | Pieces of a shared page at different depths, moving with pointer and scroll |
+| Hero | Letters keep their natural shapes. One under a person grows a little and takes their colour while neighbours move aside; the line keeps its width. Each person casts light. |
+| Hero edges | Pieces of a shared page in the side margins at different depths, following the pointer |
 | "Three people. One page." | Three demo people type their parts at once. Letters hold their places, so nothing reflows. |
 | Chapters | Each feature belongs to a person whose gradient takes over; each has its own working demo |
 | "Press /" and "Locked properly." | A key that presses down; combination-lock dials that click into place |
@@ -48,7 +48,17 @@ corner is sharp on hover.
 | App | Spring transitions for presence faces, panels, menus, lists and navigation; the theme spreads from its button |
 
 Rules: the writing surface stays calm; motion in the app answers an action or shows a person arriving.
-All motion respects reduced-motion settings. Demo people on marketing pages are labelled as demos.
+All motion respects reduced-motion settings.
+
+## Performance rules
+
+Built for a 2560×1600, 240 Hz screen (about 4 ms a frame).
+
+- Per-frame animation changes only `transform` and `opacity`; never font axes, widths or colours.
+- Physics is timed by the clock, so speed is the same at any refresh rate.
+- No full-screen blend layers, no background blur, no large moving gradients except the light that follows people.
+- Animations stop when off screen.
+- The headline never stretches letters to fill a wide screen: its size follows the tighter of width and height. Demo people on marketing pages are labelled as demos.
 
 ## Review status
 

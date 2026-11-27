@@ -37,28 +37,20 @@ export function SecurityList() {
       className="relative isolate mx-2 overflow-hidden rounded-[10px_44px_44px_44px] border border-white/10 px-3 py-24 text-white md:mx-4 md:px-8 md:py-36"
       style={{ background: "linear-gradient(165deg, var(--band-a), var(--band-b) 62%)" }}
     >
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
-        {[
-          { at: "right-[-14vw] top-[-18vw]", ink: "var(--aura1)" },
-          { at: "bottom-[-24vw] left-[-10vw]", ink: "var(--aura2)" },
-        ].map((g) => (
-          <span
-            key={g.ink}
-            className={`absolute block size-[56vw] rounded-full opacity-45 ${g.at}`}
-            style={{ background: `radial-gradient(closest-side, ${g.ink}, transparent)`, animation: "drift 20s ease-in-out infinite" }}
-          />
-        ))}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10 opacity-45"
+        style={{
+          background:
+            "radial-gradient(46% 34% at 100% 0%, var(--aura1), transparent 70%), radial-gradient(42% 30% at 0% 100%, var(--aura2), transparent 70%)",
+        }}
+      >
         {/* Rings closing around the account. */}
-        {[18, 28, 38].map((r, i) => (
+        {[22, 34, 46].map((size) => (
           <span
-            key={r}
-            className="absolute right-[-8vw] top-[-8vw] block rounded-full border border-dashed border-white/20"
-            style={{
-              width: `${r * 1.2}vw`,
-              height: `${r * 1.2}vw`,
-              translate: `${(38 - r) * -0.6}vw ${(38 - r) * 0.6}vw`,
-              animation: `spin ${50 + i * 25}s linear ${i % 2 ? "reverse" : ""} infinite`,
-            }}
+            key={size}
+            className="absolute right-0 top-0 block -translate-y-1/2 translate-x-1/2 rounded-full border border-white/25"
+            style={{ width: `${size}vw`, height: `${size}vw` }}
           />
         ))}
       </div>

@@ -33,7 +33,7 @@ const SPEEDS = [34, 52, 28];
 
 function useTyping(running: boolean, reduced: boolean) {
   const [counts, setCounts] = useState(() => WRITERS.map(() => 0));
-  const hold = useRef(0);
+  const doneAt = useRef(0);
 
   useEffect(() => {
     if (!running || reduced) return;
@@ -42,11 +42,12 @@ function useTyping(running: boolean, reduced: boolean) {
     const tick = (now: number) => {
       const elapsed = now - start;
       const next = WRITERS.map((w, i) => Math.max(0, Math.min(w.text.length, Math.floor((elapsed - i * 500) / SPEEDS[i]))));
-      setCounts(next);
+      setCounts((current) => (current.every((n, i) => n === next[i]) ? current : next));
       if (next.every((n, i) => n === WRITERS[i].text.length)) {
-        hold.current += 1;
-        if (hold.current > 260) {
-          hold.current = 0;
+        // Rest on the finished page for a few seconds, then start again.
+        doneAt.current ||= now;
+        if (now - doneAt.current > 4300) {
+          doneAt.current = 0;
           start = now;
         }
       }

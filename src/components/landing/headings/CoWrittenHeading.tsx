@@ -60,8 +60,15 @@ export function CoWrittenHeading() {
     if (!seen || reduced) return;
     let raf = 0;
     const start = performance.now();
+    let shown = "";
     const tick = (now: number) => {
-      setElapsed(now - start);
+      const passed = now - start;
+      // Re-render only when someone's next letter is due.
+      const letters = PARTS.map((p) => Math.floor((passed - p.startAt) / p.perLetter)).join() + (passed >= DONE_AT);
+      if (letters !== shown) {
+        shown = letters;
+        setElapsed(passed);
+      }
       if (now - start <= DONE_AT) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
